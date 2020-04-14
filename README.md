@@ -4,10 +4,14 @@ Helper function that builds an fp-ts-routing parser and formatter and a morphic-
 
 # Usage
 
+## Note
+
+Formatting the `NotFound` type will return '/'
+
 ```ts
 import * as R from 'fp-ts-routing'
 import { routingFromMatches3 } from 'morphic-ts-routing'
-import { ADTType } from 'morphic-ts/lib/adt/index'
+import { ADTType, ADT } from 'morphic-ts/lib/adt/index'
 
 const landing: R.Match<{}> = R.end
 const show: R.Match<{}> = R.lit('show').then(R.end)
@@ -18,30 +22,30 @@ const {
   formatter,
   adt: RouteADT
 } = routingFromMatches3(
-  ['landing', landing],
-  ['show', show],
-  ['id', id],
+  ['Landing', landing],
+  ['Show', show],
+  ['Id', id],
 );
 type RouteADT = ADTType<typeof RouteADT>
 
 /*
-
-type RouteADT = {
-    type: "landing";
-    value: {};
-} | {
-    type: "show";
-    value: {};
-} | {
-    type: "id";
-    value: {
-        id: number;
-    };
-}
-const RouteADT = ADT<RouteADT, "type">
-const parser: R.Parser<RouteADT>
-const formatter: (adt: RouteADT) => string
-
+  type RouteADT = {
+      type: "NotFound";
+  } | {
+      type: "Landing";
+      value: {};
+  } | {
+      type: "Show";
+      value: {};
+  } | {
+      type: "Id";
+      value: {
+          id: number;
+      };
+  }
+  const RouteADT: ADT<RouteADT, "type">
+  const parser: (path: string) => RouteADT
+  const formatter: (adt: RouteADT) => string
  */
 
 ```

@@ -27,19 +27,23 @@ export const routingFromMatches8 = <
   [gKey, gMatch]: [GKey, R.Match<G>],
   [hKey, hMatch]: [HKey, R.Match<H>],
 ): {
-  parser: R.Parser<{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }>;
-  formatter: (adt: { type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }) => string;
-  adt: ADT<{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }, 'type'>
+  parser: (path: string) => { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }
+  formatter: (adt: { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }) => string;
+  adt: ADT<{ type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H }, 'type'>
 } => {
   const RouteAdt = makeADT('type')({
-  [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
-  [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
-  [cKey]: ofType<{ type: CKey; value: typeof cMatch._A }>(),
-  [dKey]: ofType<{ type: DKey; value: typeof dMatch._A }>(),
-  [eKey]: ofType<{ type: EKey; value: typeof eMatch._A }>(),
-  [fKey]: ofType<{ type: FKey; value: typeof fMatch._A }>(),
-  [gKey]: ofType<{ type: GKey; value: typeof gMatch._A }>(),
-  [hKey]: ofType<{ type: HKey; value: typeof hMatch._A }>(),
+    NotFound: ofType(),
+    [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
+    [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
+    [cKey]: ofType<{ type: CKey; value: typeof cMatch._A }>(),
+    [dKey]: ofType<{ type: DKey; value: typeof dMatch._A }>(),
+    [eKey]: ofType<{ type: EKey; value: typeof eMatch._A }>(),
+    [fKey]: ofType<{ type: FKey; value: typeof fMatch._A }>(),
+    [gKey]: ofType<{ type: GKey; value: typeof gMatch._A }>(),
+    [hKey]: ofType<{ type: HKey; value: typeof hMatch._A }>(),
   });
   type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
@@ -54,31 +58,34 @@ export const routingFromMatches8 = <
   const formatter = (
     adt: RouteAdt
   ): string => {
-  if (RouteAdt.is[aKey as AKey](adt)) {
-    return R.format(aMatch.formatter, adt.value);
+  if (RouteAdt.is.NotFound(adt)) {
+    return R.format(R.end.formatter, {});
   }
-  if (RouteAdt.is[bKey as BKey](adt)) {
-    return R.format(bMatch.formatter, adt.value);
-  }
-  if (RouteAdt.is[cKey as CKey](adt)) {
-    return R.format(cMatch.formatter, adt.value);
-  }
-  if (RouteAdt.is[dKey as DKey](adt)) {
-    return R.format(dMatch.formatter, adt.value);
-  }
-  if (RouteAdt.is[eKey as EKey](adt)) {
-    return R.format(eMatch.formatter, adt.value);
-  }
-  if (RouteAdt.is[fKey as FKey](adt)) {
-    return R.format(fMatch.formatter, adt.value);
-  }
-  if (RouteAdt.is[gKey as GKey](adt)) {
-    return R.format(gMatch.formatter, adt.value);
-  }
-  return R.format(hMatch.formatter, adt.value);
+    if (RouteAdt.is[aKey as AKey](adt)) {
+      return R.format(aMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[bKey as BKey](adt)) {
+      return R.format(bMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[cKey as CKey](adt)) {
+      return R.format(cMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[dKey as DKey](adt)) {
+      return R.format(dMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[eKey as EKey](adt)) {
+      return R.format(eMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[fKey as FKey](adt)) {
+      return R.format(fMatch.formatter, adt.value);
+    }
+    if (RouteAdt.is[gKey as GKey](adt)) {
+      return R.format(gMatch.formatter, adt.value);
+    }
+    return R.format(hMatch.formatter, adt.value);
   }
   return {
-    parser,
+    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
     formatter,
     adt: RouteAdt,
   };

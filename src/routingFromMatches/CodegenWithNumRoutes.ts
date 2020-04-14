@@ -17,13 +17,25 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
   const forEachRoute = (
     indexToString: (index: number) => string,
     separator?: string,
-    finalRouteIndex?: number,
+    finalRouteIndex = numRoutes - 1,
   ) => M.fold(M.monoidString)(
-    A.range(0, separator !== undefined ? numRoutes - 2 : (finalRouteIndex || numRoutes - 1))
-    .map(index => indexToString(index) + (separator !== undefined ? separator : ''))
-  ) + (separator !== undefined ? indexToString(numRoutes - 1) : '');
+    A.range(0, separator !== undefined
+        ? finalRouteIndex - 1
+        : finalRouteIndex
+    )
+    .map(index => indexToString(index) + (
+      separator != null
+        ? separator
+        : ''
+    ))
+  ) + (
+    separator != null
+      ? indexToString(finalRouteIndex)
+      : ''
+  );
 
-  const adtType = forEachRoute(
+  const adtType = '{ type: \'NotFound\' } | \n'
+  + forEachRoute(
     (index) => `{ type: ${alphabetIndex(index, uppercase)}Key; value: ${alphabetIndex(index, uppercase)} }`,
     ' | ',
   );
@@ -34,18 +46,18 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
     (index) => `  [${alphabetIndex(index, lowercase)}Key, ${alphabetIndex(index, lowercase)}Match]: [${alphabetIndex(index, uppercase)}Key, R.Match<${alphabetIndex(index, uppercase)}>],\n`
   );
   const adtKeyVals = forEachRoute(
-    (index) => `  [${alphabetIndex(index, lowercase)}Key]: ofType<{ type: ${alphabetIndex(index, uppercase)}Key; value: typeof ${alphabetIndex(index, lowercase)}Match._A }>(),\n`
+    (index) => `    [${alphabetIndex(index, lowercase)}Key]: ofType<{ type: ${alphabetIndex(index, uppercase)}Key; value: typeof ${alphabetIndex(index, lowercase)}Match._A }>(),\n`
   );
   const parserAlts = forEachRoute(
     (index) => `    .alt(${alphabetIndex(index, lowercase)}Match.parser.map(${alphabetIndex(index, lowercase)} => ({ type: ${alphabetIndex(index, lowercase)}Key as ${alphabetIndex(index, uppercase)}Key, value: ${alphabetIndex(index, lowercase)} })))\n`
   );
   const formatterPredicates = forEachRoute(
-    (index) => `  if (RouteAdt.is[${alphabetIndex(index, lowercase)}Key as ${alphabetIndex(index, uppercase)}Key](adt)) {\n`
-      + `    return R.format(${alphabetIndex(index, lowercase)}Match.formatter, adt.value);\n`
-      + '  }\n',
+    (index) => `    if (RouteAdt.is[${alphabetIndex(index, lowercase)}Key as ${alphabetIndex(index, uppercase)}Key](adt)) {\n`
+      + `      return R.format(${alphabetIndex(index, lowercase)}Match.formatter, adt.value);\n`
+      + '    }\n',
     undefined,
     numRoutes - 2,
-  ) + `  return R.format(${alphabetIndex(numRoutes - 1, lowercase)}Match.formatter, adt.value);\n`;
+  ) + `    return R.format(${alphabetIndex(numRoutes - 1, lowercase)}Match.formatter, adt.value);\n`;
   return 'import * as R from \'fp-ts-routing\';\n'
   + 'import { makeADT, ADTType, ofType, ADT } from \'morphic-ts/lib/adt/index\';\n'
   + `export const routingFromMatches${numRoutes} = <\n`
@@ -54,11 +66,12 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
   + '>(\n'
   + tupleParams
   + '): {\n'
-  + `  parser: R.Parser<${adtType}>;\n`
+  + `  parser: (path: string) => ${adtType}\n`
   + `  formatter: (adt: ${adtType}) => string;\n`
   + `  adt: ADT<${adtType}, 'type'>\n`
   + '} => {\n'
   + '  const RouteAdt = makeADT(\'type\')({\n'
+  + '    NotFound: ofType(),\n'
   + adtKeyVals
   + '  });\n'
   + '  type RouteAdt = ADTType<typeof RouteAdt>\n'
@@ -67,10 +80,13 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
   + '  const formatter = (\n'
   + '    adt: RouteAdt\n'
   + '  ): string => {\n'
+  + '  if (RouteAdt.is.NotFound(adt)) {\n'
+  + '    return R.format(R.end.formatter, {});\n'
+  + '  }\n'
   + formatterPredicates
   + '  }\n'
   + '  return {\n'
-  + '    parser,\n'
+  + '    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),\n'
   + '    formatter,\n'
   + '    adt: RouteAdt,\n'
   + '  };\n'

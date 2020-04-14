@@ -6,12 +6,16 @@ export const routingFromMatches1 = <
 >(
   [aKey, aMatch]: [AKey, R.Match<A>],
 ): {
-  parser: R.Parser<{ type: AKey; value: A }>;
-  formatter: (adt: { type: AKey; value: A }) => string;
-  adt: ADT<{ type: AKey; value: A }, 'type'>
+  parser: (path: string) => { type: 'NotFound' } | 
+{ type: AKey; value: A }
+  formatter: (adt: { type: 'NotFound' } | 
+{ type: AKey; value: A }) => string;
+  adt: ADT<{ type: 'NotFound' } | 
+{ type: AKey; value: A }, 'type'>
 } => {
   const RouteAdt = makeADT('type')({
-  [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
+    NotFound: ofType(),
+    [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
   });
   type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
@@ -19,10 +23,13 @@ export const routingFromMatches1 = <
   const formatter = (
     adt: RouteAdt
   ): string => {
-  return R.format(aMatch.formatter, adt.value);
+  if (RouteAdt.is.NotFound(adt)) {
+    return R.format(R.end.formatter, {});
+  }
+    return R.format(aMatch.formatter, adt.value);
   }
   return {
-    parser,
+    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
     formatter,
     adt: RouteAdt,
   };
