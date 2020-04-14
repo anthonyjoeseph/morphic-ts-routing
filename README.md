@@ -9,9 +9,9 @@ import * as R from 'fp-ts-routing'
 import { routingFromMatches3 } from 'morphic-ts-routing'
 import { ADTType } from 'morphic-ts/lib/adt/index'
 
-const landing = R.end
-const show = R.lit('show').then(R.end)
-const id = R.int('id').then(R.end)
+const landing: R.Match<{}> = R.end
+const show: R.Match<{}> = R.lit('show').then(R.end)
+const id: R.Match<{ id: number }> = R.int('id').then(R.end)
 
 const {
   parser,
@@ -38,6 +38,7 @@ type RouteADT = {
         id: number;
     };
 }
+const RouteADT = ADT<RouteADT, "type">
 const parser: R.Parser<RouteADT>
 const formatter: (adt: RouteADT) => string
 
