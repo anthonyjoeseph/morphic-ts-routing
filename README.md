@@ -54,7 +54,7 @@ import * as fs from 'fs'
 import { codegenWithNumRoutes } from 'morphic-ts-routing'
 
 fs.writeFile(
-  `src/routingFromMatches100.ts`,
+  `src/RoutingFromMatches100.ts`,
   codegenWithNumRoutes(100),
   (err) => {
     // throws an error, you could also catch it here
