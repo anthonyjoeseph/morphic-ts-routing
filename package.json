@@ -1,0 +1,33 @@
+{
+  "name": "morphic-ts-routing",
+  "version": "0.0.0",
+  "description": "Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.",
+  "main": "lib/index.js",
+  "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
+  "author": "anthonygabriele <anthonyjoeseph@gmail.com>",
+  "license": "MIT",
+  "prepublish": "tsc",
+  "types": "./lib/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "node --loader @k-foss/ts-esnode --experimental-specifier-resolution=node ./src/RunCodegen.ts"
+  },
+  "peerDependencies": {
+    "fp-ts": ">= 2.5.3",
+    "fp-ts-routing": ">= 0.5.3"
+  },
+  "dependencies": {
+    "@k-foss/ts-esnode": "^1.3.1",
+    "@types/node": "^13.11.1",
+    "fp-ts": "^2.5.3",
+    "fp-ts-routing": "^0.5.3",
+    "fs": "^0.0.1-security",
+    "morphic-ts": "^0.8.0-rc.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
+    "typescript": "^3.8.3"
+  }
+}
