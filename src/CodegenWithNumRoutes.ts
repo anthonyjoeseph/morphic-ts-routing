@@ -34,7 +34,12 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
       : ''
   );
 
-  const adtType = '{ type: string; } & { value: {} | null; }';
+  const adtType = '{ type: \'NotFound\' } | \n'
+  + forEachRoute(
+    (index) => `{ type: ${alphabetIndex(index, uppercase)}Key; value: ${alphabetIndex(index, uppercase)} }`,
+    ' | ',
+  );
+
   const matchTypes = forEachRoute((index) => `  ${alphabetIndex(index, uppercase)},\n`);
   const keyTypes = forEachRoute((index) => `  ${alphabetIndex(index, uppercase)}Key extends string,\n`);
   const tupleParams = forEachRoute(
@@ -47,49 +52,42 @@ export const codegenWithNumRoutes = (numRoutes: number): string => {
     (index) => `    .alt(${alphabetIndex(index, lowercase)}Match.parser.map(${alphabetIndex(index, lowercase)} => ({ type: ${alphabetIndex(index, lowercase)}Key as ${alphabetIndex(index, uppercase)}Key, value: ${alphabetIndex(index, lowercase)} })))\n`
   );
   const formatterPredicates = forEachRoute(
-    (index) => `    if (adt.type === ${alphabetIndex(index, lowercase)}Key) {\n`
-      + `      return R.format(${alphabetIndex(index, lowercase)}Match.formatter, adt.value as ${alphabetIndex(index, uppercase)});\n`
+    (index) => `    if (RouteAdt.is[${alphabetIndex(index, lowercase)}Key as ${alphabetIndex(index, uppercase)}Key](adt)) {\n`
+      + `      return R.format(${alphabetIndex(index, lowercase)}Match.formatter, adt.value);\n`
       + '    }\n',
     undefined,
     numRoutes - 2,
-  ) + `    return R.format(${alphabetIndex(numRoutes - 1, lowercase)}Match.formatter, adt.value as ${alphabetIndex(numRoutes - 1, uppercase)});\n`;
+  ) + `    return R.format(${alphabetIndex(numRoutes - 1, lowercase)}Match.formatter, adt.value);\n`;
   return 'import * as R from \'fp-ts-routing\';\n'
-  + 'import { unionize, ofType, UnionOf, Unionized, SingleValueVariants } from \'unionize\';\n'
+  + 'import { makeADT, ADTType, ofType, ADT } from \'@morphic-ts/adt\';\n'
   + `export const routingFromMatches${numRoutes} = <\n`
   + matchTypes
   + keyTypes
   + '>(\n'
   + tupleParams
   + '): {\n'
-  + `  parser: (path: string) => ${adtType}\n`
-  + `  formatter: (adt: ${adtType}) => string;\n`
-  + `  adt: Unionized<\n`
-  + `    { [x: string]: {} | null; NotFound: {} | null; },\n`
-  + `    SingleValueVariants<{ [x: string]: {} | null; NotFound: {} | null; }, "type", "value">,\n`
-  + `    "type"\n`
-  + `  >`
+  + `  parse: (path: string) => ${adtType}\n`
+  + `  format: (adt: ${adtType}) => string;\n`
+  + `  adt: ADT<${adtType}, 'type'>\n`
   + '} => {\n'
-  + '  const RouteAdt = unionize({\n'
+  + '  const RouteAdt = makeADT(\'type\')({\n'
   + '    NotFound: ofType(),\n'
   + adtKeyVals
-  + '  }, {\n'
-  + '    value: \'value\',\n'
-  + '    tag: \'type\',\n'
   + '  });\n'
-  + '  type RouteAdt = UnionOf<typeof RouteAdt>\n'
+  + '  type RouteAdt = ADTType<typeof RouteAdt>\n'
   + '  const parser = R.zero<RouteAdt>()\n'
   + parserAlts
-  + '  const formatter = (\n'
+  + '  const format = (\n'
   + '    adt: RouteAdt\n'
   + '  ): string => {\n'
-  + '    if (adt.type === \'NotFound\') {\n'
-  + '      return R.format(R.end.formatter, {});\n'
-  + '    }\n'
+  + '  if (RouteAdt.is.NotFound(adt)) {\n'
+  + '    return R.format(R.end.formatter, {});\n'
+  + '  }\n'
   + formatterPredicates
   + '  }\n'
   + '  return {\n'
-  + '    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.NotFound({})),\n'
-  + '    formatter,\n'
+  + '    parse: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),\n'
+  + '    format,\n'
   + '    adt: RouteAdt,\n'
   + '  };\n'
   + '};';

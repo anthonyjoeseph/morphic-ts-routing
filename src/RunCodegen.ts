@@ -1,7 +1,7 @@
 import * as A from 'fp-ts/lib/Array';
 import * as M from 'fp-ts/lib/Monoid';
 import * as fs from 'fs';
-import { codegenWithNumRoutes } from './src/CodegenWithNumRoutes';
+import { codegenWithNumRoutes } from './CodegenWithNumRoutes';
 
 const indexFileWithNumFiles = (
   firstFileNum: number,

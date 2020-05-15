@@ -1,5 +1,5 @@
 import * as R from 'fp-ts-routing';
-import { unionize, ofType, UnionOf, Unionized, SingleValueVariants } from 'unionize';
+import { makeADT, ADTType, ofType, ADT } from '@morphic-ts/adt';
 export const routingFromMatches34 = <
   A,
   B,
@@ -105,14 +105,14 @@ export const routingFromMatches34 = <
   [ggKey, ggMatch]: [GGKey, R.Match<GG>],
   [hhKey, hhMatch]: [HHKey, R.Match<HH>],
 ): {
-  parser: (path: string) => { type: string; } & { value: {} | null; }
-  formatter: (adt: { type: string; } & { value: {} | null; }) => string;
-  adt: Unionized<
-    { [x: string]: {} | null; NotFound: {} | null; },
-    SingleValueVariants<{ [x: string]: {} | null; NotFound: {} | null; }, "type", "value">,
-    "type"
-  >} => {
-  const RouteAdt = unionize({
+  parse: (path: string) => { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H } | { type: IKey; value: I } | { type: JKey; value: J } | { type: KKey; value: K } | { type: LKey; value: L } | { type: MKey; value: M } | { type: NKey; value: N } | { type: OKey; value: O } | { type: PKey; value: P } | { type: QKey; value: Q } | { type: RKey; value: R } | { type: SKey; value: S } | { type: TKey; value: T } | { type: UKey; value: U } | { type: VKey; value: V } | { type: WKey; value: W } | { type: XKey; value: X } | { type: YKey; value: Y } | { type: ZKey; value: Z } | { type: AAKey; value: AA } | { type: BBKey; value: BB } | { type: CCKey; value: CC } | { type: DDKey; value: DD } | { type: EEKey; value: EE } | { type: FFKey; value: FF } | { type: GGKey; value: GG } | { type: HHKey; value: HH }
+  format: (adt: { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H } | { type: IKey; value: I } | { type: JKey; value: J } | { type: KKey; value: K } | { type: LKey; value: L } | { type: MKey; value: M } | { type: NKey; value: N } | { type: OKey; value: O } | { type: PKey; value: P } | { type: QKey; value: Q } | { type: RKey; value: R } | { type: SKey; value: S } | { type: TKey; value: T } | { type: UKey; value: U } | { type: VKey; value: V } | { type: WKey; value: W } | { type: XKey; value: X } | { type: YKey; value: Y } | { type: ZKey; value: Z } | { type: AAKey; value: AA } | { type: BBKey; value: BB } | { type: CCKey; value: CC } | { type: DDKey; value: DD } | { type: EEKey; value: EE } | { type: FFKey; value: FF } | { type: GGKey; value: GG } | { type: HHKey; value: HH }) => string;
+  adt: ADT<{ type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E } | { type: FKey; value: F } | { type: GKey; value: G } | { type: HKey; value: H } | { type: IKey; value: I } | { type: JKey; value: J } | { type: KKey; value: K } | { type: LKey; value: L } | { type: MKey; value: M } | { type: NKey; value: N } | { type: OKey; value: O } | { type: PKey; value: P } | { type: QKey; value: Q } | { type: RKey; value: R } | { type: SKey; value: S } | { type: TKey; value: T } | { type: UKey; value: U } | { type: VKey; value: V } | { type: WKey; value: W } | { type: XKey; value: X } | { type: YKey; value: Y } | { type: ZKey; value: Z } | { type: AAKey; value: AA } | { type: BBKey; value: BB } | { type: CCKey; value: CC } | { type: DDKey; value: DD } | { type: EEKey; value: EE } | { type: FFKey; value: FF } | { type: GGKey; value: GG } | { type: HHKey; value: HH }, 'type'>
+} => {
+  const RouteAdt = makeADT('type')({
     NotFound: ofType(),
     [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
     [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
@@ -148,11 +148,8 @@ export const routingFromMatches34 = <
     [ffKey]: ofType<{ type: FFKey; value: typeof ffMatch._A }>(),
     [ggKey]: ofType<{ type: GGKey; value: typeof ggMatch._A }>(),
     [hhKey]: ofType<{ type: HHKey; value: typeof hhMatch._A }>(),
-  }, {
-    value: 'value',
-    tag: 'type',
   });
-  type RouteAdt = UnionOf<typeof RouteAdt>
+  type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
     .alt(aMatch.parser.map(a => ({ type: aKey as AKey, value: a })))
     .alt(bMatch.parser.map(b => ({ type: bKey as BKey, value: b })))
@@ -188,116 +185,116 @@ export const routingFromMatches34 = <
     .alt(ffMatch.parser.map(ff => ({ type: ffKey as FFKey, value: ff })))
     .alt(ggMatch.parser.map(gg => ({ type: ggKey as GGKey, value: gg })))
     .alt(hhMatch.parser.map(hh => ({ type: hhKey as HHKey, value: hh })))
-  const formatter = (
+  const format = (
     adt: RouteAdt
   ): string => {
-    if (adt.type === 'NotFound') {
-      return R.format(R.end.formatter, {});
+  if (RouteAdt.is.NotFound(adt)) {
+    return R.format(R.end.formatter, {});
+  }
+    if (RouteAdt.is[aKey as AKey](adt)) {
+      return R.format(aMatch.formatter, adt.value);
     }
-    if (adt.type === aKey) {
-      return R.format(aMatch.formatter, adt.value as A);
+    if (RouteAdt.is[bKey as BKey](adt)) {
+      return R.format(bMatch.formatter, adt.value);
     }
-    if (adt.type === bKey) {
-      return R.format(bMatch.formatter, adt.value as B);
+    if (RouteAdt.is[cKey as CKey](adt)) {
+      return R.format(cMatch.formatter, adt.value);
     }
-    if (adt.type === cKey) {
-      return R.format(cMatch.formatter, adt.value as C);
+    if (RouteAdt.is[dKey as DKey](adt)) {
+      return R.format(dMatch.formatter, adt.value);
     }
-    if (adt.type === dKey) {
-      return R.format(dMatch.formatter, adt.value as D);
+    if (RouteAdt.is[eKey as EKey](adt)) {
+      return R.format(eMatch.formatter, adt.value);
     }
-    if (adt.type === eKey) {
-      return R.format(eMatch.formatter, adt.value as E);
+    if (RouteAdt.is[fKey as FKey](adt)) {
+      return R.format(fMatch.formatter, adt.value);
     }
-    if (adt.type === fKey) {
-      return R.format(fMatch.formatter, adt.value as F);
+    if (RouteAdt.is[gKey as GKey](adt)) {
+      return R.format(gMatch.formatter, adt.value);
     }
-    if (adt.type === gKey) {
-      return R.format(gMatch.formatter, adt.value as G);
+    if (RouteAdt.is[hKey as HKey](adt)) {
+      return R.format(hMatch.formatter, adt.value);
     }
-    if (adt.type === hKey) {
-      return R.format(hMatch.formatter, adt.value as H);
+    if (RouteAdt.is[iKey as IKey](adt)) {
+      return R.format(iMatch.formatter, adt.value);
     }
-    if (adt.type === iKey) {
-      return R.format(iMatch.formatter, adt.value as I);
+    if (RouteAdt.is[jKey as JKey](adt)) {
+      return R.format(jMatch.formatter, adt.value);
     }
-    if (adt.type === jKey) {
-      return R.format(jMatch.formatter, adt.value as J);
+    if (RouteAdt.is[kKey as KKey](adt)) {
+      return R.format(kMatch.formatter, adt.value);
     }
-    if (adt.type === kKey) {
-      return R.format(kMatch.formatter, adt.value as K);
+    if (RouteAdt.is[lKey as LKey](adt)) {
+      return R.format(lMatch.formatter, adt.value);
     }
-    if (adt.type === lKey) {
-      return R.format(lMatch.formatter, adt.value as L);
+    if (RouteAdt.is[mKey as MKey](adt)) {
+      return R.format(mMatch.formatter, adt.value);
     }
-    if (adt.type === mKey) {
-      return R.format(mMatch.formatter, adt.value as M);
+    if (RouteAdt.is[nKey as NKey](adt)) {
+      return R.format(nMatch.formatter, adt.value);
     }
-    if (adt.type === nKey) {
-      return R.format(nMatch.formatter, adt.value as N);
+    if (RouteAdt.is[oKey as OKey](adt)) {
+      return R.format(oMatch.formatter, adt.value);
     }
-    if (adt.type === oKey) {
-      return R.format(oMatch.formatter, adt.value as O);
+    if (RouteAdt.is[pKey as PKey](adt)) {
+      return R.format(pMatch.formatter, adt.value);
     }
-    if (adt.type === pKey) {
-      return R.format(pMatch.formatter, adt.value as P);
+    if (RouteAdt.is[qKey as QKey](adt)) {
+      return R.format(qMatch.formatter, adt.value);
     }
-    if (adt.type === qKey) {
-      return R.format(qMatch.formatter, adt.value as Q);
+    if (RouteAdt.is[rKey as RKey](adt)) {
+      return R.format(rMatch.formatter, adt.value);
     }
-    if (adt.type === rKey) {
-      return R.format(rMatch.formatter, adt.value as R);
+    if (RouteAdt.is[sKey as SKey](adt)) {
+      return R.format(sMatch.formatter, adt.value);
     }
-    if (adt.type === sKey) {
-      return R.format(sMatch.formatter, adt.value as S);
+    if (RouteAdt.is[tKey as TKey](adt)) {
+      return R.format(tMatch.formatter, adt.value);
     }
-    if (adt.type === tKey) {
-      return R.format(tMatch.formatter, adt.value as T);
+    if (RouteAdt.is[uKey as UKey](adt)) {
+      return R.format(uMatch.formatter, adt.value);
     }
-    if (adt.type === uKey) {
-      return R.format(uMatch.formatter, adt.value as U);
+    if (RouteAdt.is[vKey as VKey](adt)) {
+      return R.format(vMatch.formatter, adt.value);
     }
-    if (adt.type === vKey) {
-      return R.format(vMatch.formatter, adt.value as V);
+    if (RouteAdt.is[wKey as WKey](adt)) {
+      return R.format(wMatch.formatter, adt.value);
     }
-    if (adt.type === wKey) {
-      return R.format(wMatch.formatter, adt.value as W);
+    if (RouteAdt.is[xKey as XKey](adt)) {
+      return R.format(xMatch.formatter, adt.value);
     }
-    if (adt.type === xKey) {
-      return R.format(xMatch.formatter, adt.value as X);
+    if (RouteAdt.is[yKey as YKey](adt)) {
+      return R.format(yMatch.formatter, adt.value);
     }
-    if (adt.type === yKey) {
-      return R.format(yMatch.formatter, adt.value as Y);
+    if (RouteAdt.is[zKey as ZKey](adt)) {
+      return R.format(zMatch.formatter, adt.value);
     }
-    if (adt.type === zKey) {
-      return R.format(zMatch.formatter, adt.value as Z);
+    if (RouteAdt.is[aaKey as AAKey](adt)) {
+      return R.format(aaMatch.formatter, adt.value);
     }
-    if (adt.type === aaKey) {
-      return R.format(aaMatch.formatter, adt.value as AA);
+    if (RouteAdt.is[bbKey as BBKey](adt)) {
+      return R.format(bbMatch.formatter, adt.value);
     }
-    if (adt.type === bbKey) {
-      return R.format(bbMatch.formatter, adt.value as BB);
+    if (RouteAdt.is[ccKey as CCKey](adt)) {
+      return R.format(ccMatch.formatter, adt.value);
     }
-    if (adt.type === ccKey) {
-      return R.format(ccMatch.formatter, adt.value as CC);
+    if (RouteAdt.is[ddKey as DDKey](adt)) {
+      return R.format(ddMatch.formatter, adt.value);
     }
-    if (adt.type === ddKey) {
-      return R.format(ddMatch.formatter, adt.value as DD);
+    if (RouteAdt.is[eeKey as EEKey](adt)) {
+      return R.format(eeMatch.formatter, adt.value);
     }
-    if (adt.type === eeKey) {
-      return R.format(eeMatch.formatter, adt.value as EE);
+    if (RouteAdt.is[ffKey as FFKey](adt)) {
+      return R.format(ffMatch.formatter, adt.value);
     }
-    if (adt.type === ffKey) {
-      return R.format(ffMatch.formatter, adt.value as FF);
+    if (RouteAdt.is[ggKey as GGKey](adt)) {
+      return R.format(ggMatch.formatter, adt.value);
     }
-    if (adt.type === ggKey) {
-      return R.format(ggMatch.formatter, adt.value as GG);
-    }
-    return R.format(hhMatch.formatter, adt.value as HH);
+    return R.format(hhMatch.formatter, adt.value);
   }
   return {
-    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.NotFound({})),
-    formatter,
+    parse: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
+    format,
     adt: RouteAdt,
   };
 };

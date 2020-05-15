@@ -1,5 +1,5 @@
 import * as R from 'fp-ts-routing';
-import { unionize, ofType, UnionOf, Unionized, SingleValueVariants } from 'unionize';
+import { makeADT, ADTType, ofType, ADT } from '@morphic-ts/adt';
 export const routingFromMatches2 = <
   A,
   B,
@@ -9,39 +9,36 @@ export const routingFromMatches2 = <
   [aKey, aMatch]: [AKey, R.Match<A>],
   [bKey, bMatch]: [BKey, R.Match<B>],
 ): {
-  parser: (path: string) => { type: string; } & { value: {} | null; }
-  formatter: (adt: { type: string; } & { value: {} | null; }) => string;
-  adt: Unionized<
-    { [x: string]: {} | null; NotFound: {} | null; },
-    SingleValueVariants<{ [x: string]: {} | null; NotFound: {} | null; }, "type", "value">,
-    "type"
-  >} => {
-  const RouteAdt = unionize({
+  parse: (path: string) => { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B }
+  format: (adt: { type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B }) => string;
+  adt: ADT<{ type: 'NotFound' } | 
+{ type: AKey; value: A } | { type: BKey; value: B }, 'type'>
+} => {
+  const RouteAdt = makeADT('type')({
     NotFound: ofType(),
     [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
     [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
-  }, {
-    value: 'value',
-    tag: 'type',
   });
-  type RouteAdt = UnionOf<typeof RouteAdt>
+  type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
     .alt(aMatch.parser.map(a => ({ type: aKey as AKey, value: a })))
     .alt(bMatch.parser.map(b => ({ type: bKey as BKey, value: b })))
-  const formatter = (
+  const format = (
     adt: RouteAdt
   ): string => {
-    if (adt.type === 'NotFound') {
-      return R.format(R.end.formatter, {});
+  if (RouteAdt.is.NotFound(adt)) {
+    return R.format(R.end.formatter, {});
+  }
+    if (RouteAdt.is[aKey as AKey](adt)) {
+      return R.format(aMatch.formatter, adt.value);
     }
-    if (adt.type === aKey) {
-      return R.format(aMatch.formatter, adt.value as A);
-    }
-    return R.format(bMatch.formatter, adt.value as B);
+    return R.format(bMatch.formatter, adt.value);
   }
   return {
-    parser: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.NotFound({})),
-    formatter,
+    parse: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
+    format,
     adt: RouteAdt,
   };
 };

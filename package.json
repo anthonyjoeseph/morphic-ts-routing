@@ -1,34 +1,36 @@
 {
   "name": "morphic-ts-routing",
-  "version": "0.0.11",
+  "version": "0.0.44",
   "description": "Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
   "author": "anthonygabriele <anthonyjoeseph@gmail.com>",
   "license": "MIT",
   "prepublish": "tsc",
-  "types": "./lib/index.d.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "node --loader @k-foss/ts-esnode --experimental-specifier-resolution=node ./RunCodegen.ts"
-  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
-    "fp-ts": ">= 2.5.3",
+    "@morphic-ts/adt": ">= 1.5.0-alpha.0",
     "fp-ts-routing": ">= 0.5.3"
   },
   "dependencies": {
-    "@k-foss/ts-esnode": "^1.3.1",
+    "@morphic-ts/adt": "^1.5.0-alpha.0",
     "@types/node": "^13.11.1",
     "fp-ts": "^2.5.3",
-    "fp-ts-routing": "^0.5.3",
-    "fs": "^0.0.1-security",
-    "morphic-ts": "^0.8.0-rc.2",
-    "unionize": "^3.1.0"
+    "fp-ts-routing": "^0.5.3"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
+    "assert": "^2.0.0",
+    "io-ts": "^2.2.2",
     "eslint": "^6.8.0",
+    "fs": "^0.0.1-security",
+    "jest": "^26.0.1",
+    "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
   }
 }
