@@ -1,6 +1,6 @@
 {
   "name": "morphic-ts-routing",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.",
   "main": "dist/index.js",
   "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
@@ -26,9 +26,9 @@
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "assert": "^2.0.0",
-    "io-ts": "^2.2.2",
     "eslint": "^6.8.0",
     "fs": "^0.0.1-security",
+    "io-ts": "^2.2.2",
     "jest": "^26.0.1",
     "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
