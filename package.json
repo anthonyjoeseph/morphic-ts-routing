@@ -1,13 +1,16 @@
 {
   "name": "morphic-ts-routing",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "A mockable take on redux-first-router using reactive streams",
-  "main": "dist/Router.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
   "author": "anthonygabriele <anthonyjoeseph@gmail.com>",
   "license": "MIT",
   "prepublish": "tsc",
-  "types": "./dist/Router.d.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@types/history": "^4.7.5",
     "assert": "^2.0.0",
