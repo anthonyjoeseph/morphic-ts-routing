@@ -1,13 +1,13 @@
 {
-  "name": "rxjs-first-router",
-  "version": "0.0.37",
+  "name": "morphic-ts-routing",
+  "version": "0.0.39",
   "description": "A mockable take on redux-first-router using reactive streams",
-  "main": "lib/index.js",
-  "repository": "https://github.com/anthonyjoeseph/rxjs-first-router",
+  "main": "dist/index.js",
+  "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
   "author": "anthonygabriele <anthonyjoeseph@gmail.com>",
   "license": "MIT",
   "prepublish": "tsc",
-  "types": "./lib/index.d.ts",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@types/history": "^4.7.5",
     "assert": "^2.0.0",
