@@ -22,7 +22,8 @@
     "fp-ts": "^2.5.3",
     "fp-ts-routing": "^0.5.3",
     "fs": "^0.0.1-security",
-    "morphic-ts": "^0.8.0-rc.2"
+    "morphic-ts": "^0.8.0-rc.2",
+    "unionize": "^3.1.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.25.0",
