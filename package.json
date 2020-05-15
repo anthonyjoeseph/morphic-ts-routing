@@ -1,9 +1,9 @@
 {
-  "name": "morphic-ts-routing",
-  "version": "0.0.35",
-  "description": "Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.",
+  "name": "rxjs-first-router",
+  "version": "0.0.33",
+  "description": "A mockable take on redux-first-router using reactive streams",
   "main": "lib/index.js",
-  "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
+  "repository": "https://github.com/anthonyjoeseph/rxjs-first-router",
   "author": "anthonygabriele <anthonyjoeseph@gmail.com>",
   "license": "MIT",
   "prepublish": "tsc",
