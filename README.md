@@ -11,15 +11,15 @@ Formatting the `NotFound` type will return '/'
 ```ts
 import * as R from 'fp-ts-routing'
 import { routingFromMatches3 } from 'morphic-ts-routing'
-import { ADTType, ADT } from 'morphic-ts/lib/adt/index'
+import { ADTType, ADT } from '@morphic-ts/adt'
 
 const landing: R.Match<{}> = R.end
 const show: R.Match<{}> = R.lit('show').then(R.end)
 const id: R.Match<{ id: number }> = R.int('id').then(R.end)
 
 const {
-  parser,
-  formatter,
+  parse,
+  format,
   adt: RouteADT
 } = routingFromMatches3(
   ['Landing', landing],
@@ -44,8 +44,8 @@ type RouteADT = ADTType<typeof RouteADT>
       };
   }
   const RouteADT: ADT<RouteADT, "type">
-  const parser: (path: string) => RouteADT
-  const formatter: (adt: RouteADT) => string
+  const parse: (path: string) => RouteADT
+  const format: (adt: RouteADT) => string
  */
 
 ```

@@ -1,7 +1,7 @@
 import * as A from 'fp-ts/lib/Array';
 import * as M from 'fp-ts/lib/Monoid';
 import * as fs from 'fs';
-import { codegenWithNumRoutes } from './routingFromMatches/CodegenWithNumRoutes';
+import { codegenWithNumRoutes } from './CodegenWithNumRoutes';
 
 const indexFileWithNumFiles = (
   firstFileNum: number,
@@ -13,9 +13,9 @@ const indexFileWithNumFiles = (
     A.range(firstFileNum, lastFileNum - 1)
     .map(indexToString)
   )
-  return 'import { codegenWithNumRoutes } from \'./routingFromMatches/CodegenWithNumRoutes\'\n'
+  return 'import { codegenWithNumRoutes } from \'./CodegenWithNumRoutes\'\n'
   + forEachRoute(
-    index => `import { routingFromMatches${index} } from './routingFromMatches/RoutingFromMatches${index}';\n`
+    index => `import { routingFromMatches${index} } from './RoutingFromMatches${index}';\n`
   ) + '\n'
   + `export {\n`
   + '  codegenWithNumRoutes,\n'
@@ -28,7 +28,7 @@ const lastFile = 50
 
 A.range(firstFile, lastFile).forEach(numRoutes => {
   fs.writeFile(
-    `src/routingFromMatches/RoutingFromMatches${numRoutes}.ts`,
+    `src/RoutingFromMatches${numRoutes}.ts`,
     codegenWithNumRoutes(numRoutes),
     (err) => {
       // throws an error, you could also catch it here
