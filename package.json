@@ -1,6 +1,6 @@
 {
   "name": "morphic-ts-routing",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.",
   "main": "dist/index.js",
   "repository": "https://github.com/anthonyjoeseph/morphic-ts-routing",
