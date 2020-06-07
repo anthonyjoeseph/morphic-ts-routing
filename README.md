@@ -1,6 +1,6 @@
 # morphic-ts-routing
 
-Helper function that builds an fp-ts-routing parser and formatter and a morphic-ts ADT from keyed Matches.
+Parses route strings to a sum type using Matches from fp-ts-routing.
 
 # Usage
 
