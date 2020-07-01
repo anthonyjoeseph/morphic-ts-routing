@@ -1,6 +1,6 @@
 # morphic-ts-routing
 
-Parses route strings to a sum type using Matches from fp-ts-routing. Inspired by [purescript-routing-duplex](https://github.com/natefaubion/purescript-routing-duplex)
+Parses route strings to a sum type using Matches from fp-ts-routing. Tangentially inspired by [purescript-routing-duplex](https://github.com/natefaubion/purescript-routing-duplex)
 
 # Usage
 
