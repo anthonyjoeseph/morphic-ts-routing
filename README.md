@@ -33,15 +33,11 @@ type RouteADT = ADTType<typeof RouteADT>
       type: "NotFound";
   } | {
       type: "Landing";
-      value: {};
   } | {
       type: "Show";
-      value: {};
   } | {
       type: "Id";
-      value: {
-          id: number;
-      };
+      id: number;
   }
   const RouteADT: ADT<RouteADT, "type">
   const parse: (path: string) => RouteADT
@@ -50,24 +46,12 @@ type RouteADT = ADTType<typeof RouteADT>
 
 ```
 
-# Limitations
+# Limitation
 
-The library supports up to fifty (50) routes natively. If you need a function to accept more than that, you can generate your own using `codegenWithNumRoutes`
-
-```ts
-import * as fs from 'fs'
-import { codegenWithNumRoutes } from 'morphic-ts-routing'
-
-fs.writeFile(
-  `src/RoutingFromMatches100.ts`,
-  codegenWithNumRoutes(100),
-  (err) => {
-    // throws an error, you could also catch it here
-    if (err) throw err;
-
-    // success case, the file was saved
-    console.log('RoutingFromMatches100.ts saved!');
-  }
-);
+The library supports up to sixteen (16) routes. It cannot support more than that - if you try, you get this error:
 
 ```
+Expression produces a union type that is too complex to represent.
+```
+
+I'm uncertain what to do about this. Please make a PR if you have any ideas. Thanks!

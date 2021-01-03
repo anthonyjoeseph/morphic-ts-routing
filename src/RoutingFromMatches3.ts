@@ -13,39 +13,41 @@ export const routingFromMatches3 = <
   [cKey, cMatch]: [CKey, R.Match<C>],
 ): {
   parse: (path: string) => { type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C }
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey }
   format: (adt: { type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C }) => string;
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey }) => string;
   adt: ADT<{ type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C }, 'type'>
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey }, 'type'>
 } => {
   const RouteAdt = makeADT('type')({
     NotFound: ofType(),
-    [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
-    [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
-    [cKey]: ofType<{ type: CKey; value: typeof cMatch._A }>(),
+    [aKey]: ofType<A & { type: AKey }>(),
+    [bKey]: ofType<B & { type: BKey }>(),
+    [cKey]: ofType<C & { type: CKey }>(),
   });
   type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
-    .alt(aMatch.parser.map(a => ({ type: aKey as AKey, value: a })))
-    .alt(bMatch.parser.map(b => ({ type: bKey as BKey, value: b })))
-    .alt(cMatch.parser.map(c => ({ type: cKey as CKey, value: c })))
+    .alt(aMatch.parser.map(a => ({ type: aKey as AKey, ...a })))
+    .alt(bMatch.parser.map(b => ({ type: bKey as BKey, ...b })))
+    .alt(cMatch.parser.map(c => ({ type: cKey as CKey, ...c })))
+  const SafeRouteAdt = RouteAdt as ADT<{ type: 'NotFound' } | 
+{ type: AKey } | { type: BKey } | { type: CKey }, "type">
   const format = (
     adt: RouteAdt
   ): string => {
-  if (RouteAdt.is.NotFound(adt)) {
+  if (SafeRouteAdt.is.NotFound(adt)) {
     return R.format(R.end.formatter, {});
   }
-    if (RouteAdt.is[aKey as AKey](adt)) {
-      return R.format(aMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[aKey as AKey](adt)) {
+      return R.format(aMatch.formatter, adt);
     }
-    if (RouteAdt.is[bKey as BKey](adt)) {
-      return R.format(bMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[bKey as BKey](adt)) {
+      return R.format(bMatch.formatter, adt);
     }
-    return R.format(cMatch.formatter, adt.value);
+    return R.format(cMatch.formatter, adt);
   }
   return {
-    parse: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
+    parse: (path: string) => R.parse(parser, R.Route.parse(path), { type: 'NotFound' }),
     format,
     adt: RouteAdt,
   };

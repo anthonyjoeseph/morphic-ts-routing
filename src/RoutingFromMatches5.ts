@@ -19,49 +19,51 @@ export const routingFromMatches5 = <
   [eKey, eMatch]: [EKey, R.Match<E>],
 ): {
   parse: (path: string) => { type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E }
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey } | D & { type: DKey } | E & { type: EKey }
   format: (adt: { type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E }) => string;
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey } | D & { type: DKey } | E & { type: EKey }) => string;
   adt: ADT<{ type: 'NotFound' } | 
-{ type: AKey; value: A } | { type: BKey; value: B } | { type: CKey; value: C } | { type: DKey; value: D } | { type: EKey; value: E }, 'type'>
+A & { type: AKey } | B & { type: BKey } | C & { type: CKey } | D & { type: DKey } | E & { type: EKey }, 'type'>
 } => {
   const RouteAdt = makeADT('type')({
     NotFound: ofType(),
-    [aKey]: ofType<{ type: AKey; value: typeof aMatch._A }>(),
-    [bKey]: ofType<{ type: BKey; value: typeof bMatch._A }>(),
-    [cKey]: ofType<{ type: CKey; value: typeof cMatch._A }>(),
-    [dKey]: ofType<{ type: DKey; value: typeof dMatch._A }>(),
-    [eKey]: ofType<{ type: EKey; value: typeof eMatch._A }>(),
+    [aKey]: ofType<A & { type: AKey }>(),
+    [bKey]: ofType<B & { type: BKey }>(),
+    [cKey]: ofType<C & { type: CKey }>(),
+    [dKey]: ofType<D & { type: DKey }>(),
+    [eKey]: ofType<E & { type: EKey }>(),
   });
   type RouteAdt = ADTType<typeof RouteAdt>
   const parser = R.zero<RouteAdt>()
-    .alt(aMatch.parser.map(a => ({ type: aKey as AKey, value: a })))
-    .alt(bMatch.parser.map(b => ({ type: bKey as BKey, value: b })))
-    .alt(cMatch.parser.map(c => ({ type: cKey as CKey, value: c })))
-    .alt(dMatch.parser.map(d => ({ type: dKey as DKey, value: d })))
-    .alt(eMatch.parser.map(e => ({ type: eKey as EKey, value: e })))
+    .alt(aMatch.parser.map(a => ({ type: aKey as AKey, ...a })))
+    .alt(bMatch.parser.map(b => ({ type: bKey as BKey, ...b })))
+    .alt(cMatch.parser.map(c => ({ type: cKey as CKey, ...c })))
+    .alt(dMatch.parser.map(d => ({ type: dKey as DKey, ...d })))
+    .alt(eMatch.parser.map(e => ({ type: eKey as EKey, ...e })))
+  const SafeRouteAdt = RouteAdt as ADT<{ type: 'NotFound' } | 
+{ type: AKey } | { type: BKey } | { type: CKey } | { type: DKey } | { type: EKey }, "type">
   const format = (
     adt: RouteAdt
   ): string => {
-  if (RouteAdt.is.NotFound(adt)) {
+  if (SafeRouteAdt.is.NotFound(adt)) {
     return R.format(R.end.formatter, {});
   }
-    if (RouteAdt.is[aKey as AKey](adt)) {
-      return R.format(aMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[aKey as AKey](adt)) {
+      return R.format(aMatch.formatter, adt);
     }
-    if (RouteAdt.is[bKey as BKey](adt)) {
-      return R.format(bMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[bKey as BKey](adt)) {
+      return R.format(bMatch.formatter, adt);
     }
-    if (RouteAdt.is[cKey as CKey](adt)) {
-      return R.format(cMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[cKey as CKey](adt)) {
+      return R.format(cMatch.formatter, adt);
     }
-    if (RouteAdt.is[dKey as DKey](adt)) {
-      return R.format(dMatch.formatter, adt.value);
+    if (SafeRouteAdt.is[dKey as DKey](adt)) {
+      return R.format(dMatch.formatter, adt);
     }
-    return R.format(eMatch.formatter, adt.value);
+    return R.format(eMatch.formatter, adt);
   }
   return {
-    parse: (path: string) => R.parse(parser, R.Route.parse(path), RouteAdt.as.NotFound({})),
+    parse: (path: string) => R.parse(parser, R.Route.parse(path), { type: 'NotFound' }),
     format,
     adt: RouteAdt,
   };

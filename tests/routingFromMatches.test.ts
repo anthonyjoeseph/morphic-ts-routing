@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { routingFromMatches3 } from '../src/index';
 import * as R from 'fp-ts-routing'
-import { ADTType, ADT } from '@morphic-ts/adt'
+import { ADTType } from '@morphic-ts/adt'
 
 describe('Generated ADTs', () => {
 
@@ -20,11 +20,11 @@ describe('Generated ADTs', () => {
   type RouteADT = ADTType<typeof RouteADT>
 
   const routeAdts = [
-    RouteADT.as.Landing({ value: {} }),
-    RouteADT.as.Landing({ value: {} }),
-    RouteADT.as.Show({ value: {} }),
-    RouteADT.as.Id({ value: { id: 1234 } }),
-    RouteADT.as.NotFound({ }),
+    RouteADT.as.Landing({}),
+    RouteADT.as.Landing({}),
+    RouteADT.as.Show({}),
+    RouteADT.as.Id({ id: 1234 }),
+    RouteADT.as.NotFound({}),
   ];
 
   it('can parse', () => {

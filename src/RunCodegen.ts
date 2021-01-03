@@ -24,7 +24,7 @@ const indexFileWithNumFiles = (
 };
 
 const firstFile = 1
-const lastFile = 50
+const lastFile = 16
 
 A.range(firstFile, lastFile).forEach(numRoutes => {
   fs.writeFile(
