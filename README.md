@@ -46,6 +46,27 @@ type RouteADT = ADTType<typeof RouteADT>
 
 ```
 
+# Package size
+
+If this package is too big for your website, you can use `codegenWithNumRoutes` to generate a single file
+
+```ts
+import * as fs from 'fs'
+import { codegenWithNumRoutes } from 'morphic-ts-routing'
+
+fs.writeFile(
+  `src/RoutingFromMatches100.ts`,
+  codegenWithNumRoutes(100),
+  (err) => {
+    // throws an error, you could also catch it here
+    if (err) throw err;
+
+    // success case, the file was saved
+    console.log('RoutingFromMatches100.ts saved!');
+  }
+);
+```
+
 # Limitation
 
 The library supports up to sixteen (16) routes. It cannot support more than that - if you try, you get this error:
